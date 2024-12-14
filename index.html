@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8" />
+  <script src="./vue.js"></script>
+
+</head>
+
+<body>
+  
+  <div id="container">
+
+
+    <div class="vf" >
+
+      <p>Model 029-Fluid Frames</p>
+
+
+
+
+      <div class="mk">
+
+
+
+        <div style="padding-left:1vw ;padding-top:1vh ;font-size: 0.8vw;">text1</div>
+
+
+        <div style="padding-left:1vw;margin-top:1vh">
+          <div>
+            <textarea style="height:8vh;" id="m1"></textarea>
+
+          </div>
+
+      
+        </div>
+        <div style="padding-left:1vw ;padding-top:1vh ;font-size: 0.8vw;">text2</div>
+
+
+        <div style="padding-left:1vw;margin-top:1vh">
+          <div>
+            <textarea style="height:8vh;" id="m2"></textarea>
+
+          </div>
+
+      
+        </div>
+
+        <div style="padding-left:1vw ;padding-top:1vh ;font-size: 0.8vw;">image 1</div>
+        <div style="padding-left:1vw ;padding-top:1vh ;font-size: 0.8vw;">
+          <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;">
+
+          <button style="border-radius: 10px;border: 1px solid black;" @click="uploadImage">uploadImage</button>
+        </div>
+
+        <div style="padding-left:1vw ;padding-top:1vh ;font-size: 0.8vw;">image 2</div>
+        <div style="padding-left:1vw ;padding-top:1vh ;font-size: 0.8vw;">
+          <input type="file" ref="fileInput1" @change="handleFileUpload1" style="display: none;">
+
+          <button style="border-radius: 10px;border: 1px solid black;" @click="uploadImage1">uploadImage</button>
+        </div>
+
+      
+
+
+        
+      </div>
+
+
+
+      <img src="./img/0.png" style=" height: 33.8vh;" alt="">
+      <img src="./img/1.png" style=" height: 13.3vh;" alt="">
+
+
+      <div   @click="downfile"   style="margin-top:-8vh;margin-left:50px;width:50px;height:15px;line-height: 15px;   border:1.2px solid black;font-size: 8px;background-color: white;text-align: center;">download</div>
+    </div>
+
+
+    <button style="position: absolute;
+    top: 50%;
+    right: 50px;
+    transform: translateY(-50%);"  @click="saveImage">save png</button>
+    <div style="width:83vw;background-color: black;height:100vh;display: flex;flex-direction: row;align-items: center;justify-content: space-evenly;">
+
+<div>
+<div >
+  <div class="mm">1.object detection</div>
+  <iframe id="iframeA" style="width:15.6vw;height:37vh" src="/1/index.html"></iframe>
+
+</div>
+
+<div style="margin-top:4vh">
+  <div class="mm">2.calculate</div>
+  <iframe id="iframeB" style="width:15.6vw;height:37vh" src="/2/index.html"></iframe>
+</div>
+     
+</div>
+
+   
+<div>
+  <div class="mm">3.Arrange Text and Images</div>
+  <iframe id="iframeC" style="width:36vw;height:85.1vh" src="/3/index.html"></iframe>
+</div>
+
+
+
+
+    </div>
+    
+  </div>
+
+
+  <script>
+
+
+          // 监听来自 iframe A 的消息
+    window.addEventListener('message', function(event) {
+        const iframeB = document.getElementById('iframeB').contentWindow;
+        // 将消息转发给 iframe B
+        iframeB.postMessage(event.data, '*');
+        const iframeC = document.getElementById('iframeC').contentWindow;
+        // 将消息转发给 iframe B
+        iframeC.postMessage(event.data, '*');
+    });
+
+    new Vue({
+      el: '#container',
+      data: {
+        tab: "poster1",
+        textSty:0,
+        textCount:1,
+        tx:"",
+        tv:Array.from({ length: 5 }, () => ['', ''])
+      },
+      /**
+       * 
+       */
+      methods:{
+
+
+        handleFileUpload(event) {
+          let file = event.target.files[0];
+
+
+
+          if (file) {
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+              const imageSrc = e.target.result;
+
+
+              sessionStorage.setItem("imageSrc1", imageSrc);
+
+
+              document.getElementById('iframeC').contentWindow.handleFile(1);
+
+
+            }
+
+            reader.readAsDataURL(file);
+          }
+
+        },
+        uploadImage() {
+          this.$refs.fileInput.click(); // 模拟点击文件输入框
+        },
+        saveImage(){
+          document.getElementById('iframeC').contentWindow.saveImage();
+        },
+
+
+        downfile(){
+          const link = document.createElement('a');
+            link.href = './download.pdf'; // PDF 文件的路径
+            link.download = 'download.pdf'; // 下载时的文件名
+            document.body.appendChild(link); // 将链接添加到文档
+            link.click(); // 触发点击事件
+            document.body.removeChild(link); // 下载后移除链接
+        },
+
+
+     
+        handleFileUpload1(event) {
+          let file = event.target.files[0];
+
+
+
+          if (file) {
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+              const imageSrc = e.target.result;
+
+
+              sessionStorage.setItem("imageSrc2", imageSrc);
+
+
+              document.getElementById('iframeC').contentWindow.handleFile(2);
+
+
+            }
+
+            reader.readAsDataURL(file);
+          }
+
+        },
+        uploadImage1() {
+          this.$refs.fileInput1.click(); // 模拟点击文件输入框
+        },
+        
+      }
+
+
+    })
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </script>
+
+
+
+</body>
+
+
+<style>
+
+
+
+  .mm{
+
+    display: block; /* 设置为块级元素 */
+    width: fit-content; /* 根据内容宽度自适应 */
+    /* height:30px; */
+    padding: 3px;
+    background-color: white;
+    color:black;
+    text-align: center;
+    /* line-height: 30px; */
+    margin-bottom: 20px;
+  }
+</style>
+
+</html>
